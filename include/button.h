@@ -1,6 +1,8 @@
 #ifndef __BUTTON_H__
 #define __BUTTON_H__
 
+#include <Arduino.h>
+
 #define DEBOUNCE_TIME 50
 #define LONG_PRESS_TIME 600
 #define ANALOG_TRESHOLD 500

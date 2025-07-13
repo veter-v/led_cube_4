@@ -2,85 +2,82 @@
 #include "config.h"
 
 // Вспомогательные функции
-void switch_contacts(int dimension, const int pins[], int switch_to) {
-    for (int contact = 0; contact < dimension; contact++) {
-        digitalWrite(pins[contact], switch_to);
+void reset_pin_state()
+{
+    for (int i = 0; i < DIMENSION_H; i++) {
+        digitalWrite(layerPins[i], LOW);
+    }
+    for (int i = 0; i < DIMENSION_S; i++) {
+        digitalWrite(columnPins[i], LOW);
     }
 }
 
 // Режимы работы
-void HorizontalLayerByLayer(int time_step) {
-    for (int layer = 0; layer < DIMENSION_H; layer++) {
-        digitalWrite(layerPins[layer], HIGH);
-        if (layer != DIMENSION_H - 1) 
-            delay(time_step);
-    }
+void AllLeds()
+{
+    static uint8_t layer = 0;
+    static uint32_t timer = millis();
+    static bool switch_led_to;
 
-    for (int layer = 0; layer < DIMENSION_H; layer++) {
-        digitalWrite(layerPins[layer], LOW);
-        if (layer != DIMENSION_H - 1) 
-            delay(time_step);
-    }
-
-    for (int layer = DIMENSION_H - 1; layer >= 0; layer--) {
-        digitalWrite(layerPins[layer], HIGH);
-        if (layer != 0) 
-            delay(time_step);
-    }
-
-    for (int layer = DIMENSION_H - 1; layer >= 0; layer--) {
-        digitalWrite(layerPins[layer], LOW);
-        if (layer != 0) 
-            delay(time_step);
+    if (layer == DIMENSION_H) {
+        if (millis() - timer >= TIME_STEP) {
+            switch_led_to = !switch_led_to;
+            layer = 0;
+        }
+    } else {
+        digitalWrite(layerPins[layer++], switch_led_to);
+        if (layer == DIMENSION_H) {
+            timer = millis();
+        }
     }
 }
 
-void VerticalLayerByLayer(int time_step) {
+void HorizontalLayerByLayer()
+{
+    static int phase = 0;
+    static int layer = 0;
+    static unsigned long last_step_time = 0;
 
-    switch_contacts(DIMENSION_H, layerPins, HIGH);
-    switch_contacts(DIMENSION_S, columnPins, HIGH);
-    
-    for (int mask = 0; mask < DIMENSION_S; mask += DIMENSION_H) {
-        for (int column = mask; column < mask + DIMENSION_H; column++) {
-            digitalWrite(columnPins[column], LOW);
+    if (millis() - last_step_time < TIME_STEP)
+        return;
+
+    last_step_time = millis();
+
+    switch (phase) {
+    case 0: // Включаем по порядку
+        digitalWrite(layerPins[layer], HIGH);
+        layer++;
+        if (layer >= DIMENSION_H) {
+            layer = 0;
+            phase = 1;
         }
-        if (mask != DIMENSION_S - DIMENSION_H) 
-            delay(time_step);
-    }
-    
-    for (int mask = 0; mask < DIMENSION_S; mask += DIMENSION_H) {
-        for (int column = mask; column < mask + DIMENSION_H; column++) {
-            digitalWrite(columnPins[column], HIGH);
+        break;
+
+    case 1: // Выключаем по порядку
+        digitalWrite(layerPins[layer], LOW);
+        layer++;
+        if (layer >= DIMENSION_H) {
+            layer = DIMENSION_H - 1;
+            phase = 2;
         }
-        if (mask != DIMENSION_S - DIMENSION_H) 
-            delay(time_step);
-    }
+        break;
 
-    for (int mask = DIMENSION_S - 1; mask >= 0; mask -= DIMENSION_H) {
-        for (int column = mask; column > mask - DIMENSION_H; column--) {
-            digitalWrite(columnPins[column], LOW);
+    case 2: // Включаем в обратном порядке
+        digitalWrite(layerPins[layer], HIGH);
+        layer--;
+        if (layer < 0) {
+            layer = DIMENSION_H - 1;
+            phase = 3;
         }
-        if (mask != 0) 
-            delay(time_step);
-    }
+        break;
 
-    for (int mask = DIMENSION_S - 1; mask >= 0; mask -= DIMENSION_H) {
-        for (int column = mask; column > mask - DIMENSION_H; column--) {
-            digitalWrite(columnPins[column], HIGH);
+    case 3: // Выключаем в обратном порядке
+        digitalWrite(layerPins[layer], LOW);
+        layer--;
+        if (layer < 0) {
+            layer = 0;
+            phase = 0;
         }
-        if (mask != DIMENSION_H - 1) 
-            delay(time_step);
-    }
-
-    switch_contacts(DIMENSION_S, columnPins, LOW);
-    switch_contacts(DIMENSION_H, layerPins, LOW);
-}
-
-void LayerByLayer(int iterations, int time_step) {
-    for (int iteration = 0; iteration < iterations; iteration++) {
-        HorizontalLayerByLayer(time_step);
-    }
-    for (int iteration = 0; iteration < iterations; iteration++) {
-        VerticalLayerByLayer(time_step);
+        break;
     }
 }
