@@ -7,8 +7,21 @@
 #define LONG_PRESS_TIME 600
 #define ANALOG_TRESHOLD 500
 
-enum button_modes { not_pressed, press, hold };
+class Button {
+  public:
+    enum button_modes { not_pressed, press, hold };
 
-bool check_button(button_modes& state, uint8_t analog_pin);
+  private:
+    uint8_t pin;
+    button_modes state = not_pressed;
+
+    bool read_analog_button() const { return analogRead(pin) < ANALOG_TRESHOLD; }
+
+  public:
+    Button(uint8_t pin) : pin(pin), state(not_pressed) {}
+
+    button_modes get_state() const { return state; }
+    bool check_button();
+};
 
 #endif

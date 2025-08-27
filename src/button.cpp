@@ -1,19 +1,14 @@
 #include <Arduino.h>
 #include "button.h"
 
-bool read_analog_button(uint8_t analog_pin)
-{
-    return analogRead(analog_pin) < ANALOG_TRESHOLD;
-}
-
-bool check_button(button_modes& state, uint8_t analog_pin)
+bool Button::check_button()
 {
     static uint32_t btn_start_timer;
     uint32_t current_time = millis();
 
     static bool is_hold_triggered;
     static bool last_state;
-    bool current_state = read_analog_button(analog_pin);
+    bool current_state = read_analog_button();
 
     if (last_state != current_state) {
         last_state = current_state;

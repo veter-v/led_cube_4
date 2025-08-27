@@ -28,12 +28,12 @@ void setup()
 
 void loop()
 {
-    static button_modes state_btnA6 = not_pressed;
-    if (check_button(state_btnA6, BUTTON_PIN)) {
-        if (state_btnA6 == press) {
+    Button btn_switch_modes(BUTTON_PIN);
+    if (btn_switch_modes.check_button()) {
+        if (btn_switch_modes.get_state() == Button::press) {
             current_mode = (current_mode + 1) % mode_count;
             reset_pin_state();
-        } else if (state_btnA6 == hold) {
+        } else if (btn_switch_modes.get_state() == Button::hold) {
             current_mode = (current_mode - 1 + mode_count) % mode_count;
         }
     }
