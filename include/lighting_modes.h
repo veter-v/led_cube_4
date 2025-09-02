@@ -12,25 +12,26 @@ class Mode {
     bool start_reset_to {LOW};
 
   protected:
-    uint8_t counter {0};
+    uint8_t pins_counter {0};
     uint32_t timer {millis()};
     uint8_t phase = 0;
-    bool switch_led_to {HIGH};
 
   public:
-    Mode(bool start_all_pins_to = LOW)
-        : start_reset_to(start_all_pins_to), counter(0), timer(millis()), phase(0), switch_led_to(!start_all_pins_to)
+    Mode(bool start_all_pins_to = LOW) : start_reset_to(start_all_pins_to), pins_counter(0), timer(millis()), phase(0)
     {
     }
     void reset_pin_state() const;
-    void set_to_start();
+    virtual void set_to_start();
     virtual void mode() {}
 };
 
 class AllLeds : public Mode {
+    bool switch_led_to {HIGH};
+
   public:
-    AllLeds() : Mode(LOW) {}
+    AllLeds() : Mode(LOW), switch_led_to(HIGH) {}
     void mode();
+    void set_to_start();
 };
 
 class HorizontalLayerByLayer : public Mode {

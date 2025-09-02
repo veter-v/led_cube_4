@@ -12,7 +12,6 @@ Mode* lighting_modes[] = {
         &all_leds,
         &horizontal_layer_by_layer,
 };
-/*TODO: bugfix when switching modes (init_fn/loop_fn)*/
 
 const int mode_count = sizeof(lighting_modes) / sizeof(*lighting_modes);
 int current_mode = 0;
