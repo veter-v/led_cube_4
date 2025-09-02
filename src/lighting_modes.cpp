@@ -1,81 +1,84 @@
 #include <Arduino.h>
 #include "config.h"
+#include "lighting_modes.h"
 
-// Вспомогательные функции
-void reset_pin_state()
+// Mode
+void Mode::reset_pin_state() const
 {
     for (int i = 0; i < DIMENSION_H; i++) {
-        digitalWrite(layerPins[i], LOW);
+        digitalWrite(layerPins[i], start_reset_to);
     }
     for (int i = 0; i < DIMENSION_S; i++) {
-        digitalWrite(columnPins[i], LOW);
+        digitalWrite(columnPins[i], start_reset_to);
     }
 }
 
-// Режимы работы
-void AllLeds()
+void Mode::set_to_start()
 {
-    static uint8_t layer = 0;
-    static uint32_t timer = millis();
-    static bool switch_led_to;
+    counter = 0;
+    timer = millis();
+    phase = 0;
+    switch_led_to = !start_reset_to;
+}
 
-    if (layer == DIMENSION_H) {
+// Режимы работы
+void AllLeds::mode()
+{
+    if (counter == DIMENSION_H) {
         if (millis() - timer >= TIME_STEP) {
             switch_led_to = !switch_led_to;
-            layer = 0;
+            counter = 0;
         }
     } else {
-        digitalWrite(layerPins[layer++], switch_led_to);
-        if (layer == DIMENSION_H) {
+        digitalWrite(layerPins[counter++], switch_led_to);
+        if (counter == DIMENSION_H) {
             timer = millis();
         }
     }
 }
 
-void HorizontalLayerByLayer()
+void HorizontalLayerByLayer::mode()
 {
-    static int phase = 0;
-    static int layer = 0;
-    static unsigned long last_step_time = 0;
-
-    if (millis() - last_step_time < TIME_STEP)
+    if (millis() - timer < TIME_STEP)
         return;
 
-    last_step_time = millis();
-
+    timer = millis();
     switch (phase) {
     case 0: // Включаем по порядку
-        digitalWrite(layerPins[layer], HIGH);
-        layer++;
-        if (layer >= DIMENSION_H) {
-            layer = 0;
+        digitalWrite(layerPins[counter], HIGH);
+        counter++;
+        if (counter >= DIMENSION_H) {
+            counter = 0;
             phase = 1;
         }
         break;
 
     case 1: // Выключаем по порядку
-        digitalWrite(layerPins[layer], LOW);
-        layer++;
-        if (layer >= DIMENSION_H) {
-            layer = DIMENSION_H - 1;
+        digitalWrite(layerPins[counter], LOW);
+        counter++;
+        if (counter >= DIMENSION_H) {
+            counter = DIMENSION_H - 1;
             phase = 2;
         }
         break;
 
     case 2: // Включаем в обратном порядке
-        digitalWrite(layerPins[layer], HIGH);
-        layer--;
-        if (layer < 0) {
-            layer = DIMENSION_H - 1;
+        if (counter > 0) {
+            digitalWrite(layerPins[counter], HIGH);
+            counter--;
+        } else if (counter == 0) {
+            digitalWrite(layerPins[counter], HIGH);
+            counter = DIMENSION_H - 1;
             phase = 3;
         }
         break;
 
     case 3: // Выключаем в обратном порядке
-        digitalWrite(layerPins[layer], LOW);
-        layer--;
-        if (layer < 0) {
-            layer = 0;
+        if (counter > 0) {
+            digitalWrite(layerPins[counter], LOW);
+            counter--;
+        } else if (counter == 0) {
+            digitalWrite(layerPins[counter], LOW);
             phase = 0;
         }
         break;

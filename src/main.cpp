@@ -5,9 +5,12 @@
 #include "button.h"
 
 // Список режимов
-void (*lighting_modes[])() = {
-        AllLeds,
-        HorizontalLayerByLayer,
+AllLeds all_leds;
+HorizontalLayerByLayer horizontal_layer_by_layer;
+
+Mode* lighting_modes[] = {
+        &all_leds,
+        &horizontal_layer_by_layer,
 };
 /*TODO: bugfix when switching modes (init_fn/loop_fn)*/
 
@@ -32,10 +35,13 @@ void loop()
     if (btn_switch_modes.check_button()) {
         if (btn_switch_modes.get_state() == Button::press) {
             current_mode = (current_mode + 1) % mode_count;
-            reset_pin_state();
+            lighting_modes[current_mode]->reset_pin_state();
+            lighting_modes[current_mode]->set_to_start();
         } else if (btn_switch_modes.get_state() == Button::hold) {
             current_mode = (current_mode - 1 + mode_count) % mode_count;
+            lighting_modes[current_mode]->reset_pin_state();
+            lighting_modes[current_mode]->set_to_start();
         }
     }
-    lighting_modes[current_mode]();
+    lighting_modes[current_mode]->mode();
 }
