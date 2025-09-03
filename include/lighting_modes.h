@@ -2,7 +2,6 @@
 #define __LIGHTNING_MODES_H__
 
 /* TODO:
-class VerticalLayerByLayer;
 class Heart;
 class Cube;
 class Rain;
@@ -37,6 +36,12 @@ class AllLeds : public Mode {
 class HorizontalLayerByLayer : public Mode {
   public:
     HorizontalLayerByLayer() : Mode(LOW) {}
+    void mode();
+};
+
+class VerticalLayerByLayer : public Mode {
+  public:
+    VerticalLayerByLayer() : Mode(HIGH) {}
     void mode();
 };
 

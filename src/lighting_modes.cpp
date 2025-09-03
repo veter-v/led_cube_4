@@ -88,3 +88,52 @@ void HorizontalLayerByLayer::mode()
         break;
     }
 }
+
+void VerticalLayerByLayer::mode()
+{
+    if (millis() - timer < TIME_STEP)
+        return;
+
+    timer = millis();
+
+    switch (phase) {
+    case 0: // Включаем вертикальные слои
+        for (int i = pins_counter; i < DIMENSION_H + pins_counter; i++)
+            digitalWrite(columnPins[i], LOW);
+        pins_counter += DIMENSION_H;
+        if (pins_counter == DIMENSION_S) {
+            phase = 1;
+            pins_counter = 0;
+        }
+        break;
+    case 1: // Выключаем вертикальные слои
+        for (int i = pins_counter; i < DIMENSION_H + pins_counter; i++)
+            digitalWrite(columnPins[i], HIGH);
+        pins_counter += DIMENSION_H;
+        if (pins_counter == DIMENSION_S - DIMENSION_H) {
+            phase = 2;
+            pins_counter = DIMENSION_S - 1;
+        }
+        break;
+    case 2: // Включаем в обратном порядке
+        for (int i = pins_counter; i > pins_counter - DIMENSION_H; i--)
+            digitalWrite(columnPins[i], LOW);
+        if (pins_counter > DIMENSION_H)
+            pins_counter -= DIMENSION_H;
+        else {
+            phase = 3;
+            pins_counter = DIMENSION_S - 1;
+        }
+        break;
+    case 3: // Выключаем в обратном порядке
+        for (int i = pins_counter; i > pins_counter - DIMENSION_H; i--)
+            digitalWrite(columnPins[i], HIGH);
+        if (pins_counter > DIMENSION_H + DIMENSION_H)
+            pins_counter -= DIMENSION_H;
+        else {
+            phase = 0;
+            pins_counter = 0;
+        }
+        break;
+    }
+}

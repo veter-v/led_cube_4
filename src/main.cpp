@@ -7,10 +7,12 @@
 // Список режимов
 AllLeds all_leds;
 HorizontalLayerByLayer horizontal_layer_by_layer;
+VerticalLayerByLayer vertical_layer_by_layer;
 
 Mode* lighting_modes[] = {
         &all_leds,
         &horizontal_layer_by_layer,
+        &vertical_layer_by_layer,
 };
 
 const int mode_count = sizeof(lighting_modes) / sizeof(*lighting_modes);
