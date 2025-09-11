@@ -6,9 +6,11 @@
 void Mode::reset_pin_state() const
 {
     for (int i = 0; i < DIMENSION_H; i++) {
+        pinMode(layerPins[i], OUTPUT);
         digitalWrite(layerPins[i], start_reset_to);
     }
     for (int i = 0; i < DIMENSION_S; i++) {
+        pinMode(columnPins[i], OUTPUT);
         digitalWrite(columnPins[i], start_reset_to);
     }
 }

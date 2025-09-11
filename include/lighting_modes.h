@@ -14,14 +14,16 @@ class Mode {
     uint8_t pins_counter {0};
     uint32_t timer {millis()};
     uint8_t phase = 0;
-
-  public:
     Mode(bool start_all_pins_to = LOW) : start_reset_to(start_all_pins_to), pins_counter(0), timer(millis()), phase(0)
     {
     }
+
+  public:
     void reset_pin_state() const;
     virtual void set_to_start();
-    virtual void mode() {}
+    virtual void mode() = 0;
+
+    virtual ~Mode() {}
 };
 
 class AllLeds : public Mode {
@@ -29,20 +31,20 @@ class AllLeds : public Mode {
 
   public:
     AllLeds() : Mode(LOW), switch_led_to(HIGH) {}
-    void mode();
-    void set_to_start();
+    void mode() override;
+    void set_to_start() override;
 };
 
 class HorizontalLayerByLayer : public Mode {
   public:
     HorizontalLayerByLayer() : Mode(LOW) {}
-    void mode();
+    void mode() override;
 };
 
 class VerticalLayerByLayer : public Mode {
   public:
     VerticalLayerByLayer() : Mode(HIGH) {}
-    void mode();
+    void mode() override;
 };
 
 #endif
