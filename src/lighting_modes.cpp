@@ -26,7 +26,7 @@ void Mode::set_to_start()
 void AllLeds::mode()
 {
     if (pins_counter == DIMENSION_H) {
-        if (millis() - timer >= TIME_STEP) {
+        if (millis() - timer >= 2 * TIME_STEP) {
             switch_led_to = !switch_led_to;
             pins_counter = 0;
         }
@@ -137,5 +137,47 @@ void VerticalLayerByLayer::mode()
             pins_counter = 0;
         }
         break;
+    }
+}
+
+void Heart::mode()
+{
+    if (millis() - timer < TIME_HEART_PHASE && knocks_counter == MAX_KNOCKS)
+        return;
+    if (millis() - knock_timer < TIME_HEART_KNOCK && knocks_counter < MAX_KNOCKS)
+        return;
+
+    if (knocks_counter == MAX_KNOCKS) {
+        timer = millis();
+        knocks_counter = 0;
+    }
+    if (knocks_counter < MAX_KNOCKS)
+        knock_timer = millis();
+
+    switch (phase) {
+    case 0: // Включаем по порядку
+        digitalWrite(layerPins[pins_counter++], HIGH);
+        if (pins_counter == DIMENSION_H)
+            phase = 1;
+        break;
+    case 1: // Выключаем по порядку
+        digitalWrite(layerPins[--pins_counter], LOW);
+        if (pins_counter == 1) {
+            phase = 0;
+            knocks_counter++;
+        }
+        break;
+    }
+}
+
+void Heart::set_to_start()
+{
+    Mode::set_to_start();
+    knock_timer = millis();
+    knocks_counter = 0;
+    for (int i = DIMENSION_H / 2; i < DIMENSION_H; i++) {
+        for (int j = DIMENSION_H / 2; j < DIMENSION_H; j++) {
+            pinMode(columnPins[i * DIMENSION_H + j], INPUT);
+        }
     }
 }

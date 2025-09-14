@@ -2,9 +2,9 @@
 #define __LIGHTNING_MODES_H__
 
 /* TODO:
-class Heart;
-class Cube;
+class CubeSmallBig;
 class Rain;
+class FlyingCube;
 */
 
 class Mode {
@@ -45,6 +45,16 @@ class VerticalLayerByLayer : public Mode {
   public:
     VerticalLayerByLayer() : Mode(HIGH) {}
     void mode() override;
+};
+
+class Heart : public Mode {
+    uint32_t knock_timer {millis()};
+    uint8_t knocks_counter {0};
+
+  public:
+    Heart() : Mode(LOW), knock_timer {millis()} {}
+    void mode() override;
+    void set_to_start() override;
 };
 
 #endif
