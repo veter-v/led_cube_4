@@ -9,12 +9,14 @@ AllLeds all_leds;
 HorizontalLayerByLayer horizontal_layer_by_layer;
 VerticalLayerByLayer vertical_layer_by_layer;
 Heart heart;
+CubeSmallBig cube_small_big;
 
 Mode* lighting_modes[] = {
         &all_leds,
         &horizontal_layer_by_layer,
         &vertical_layer_by_layer,
         &heart,
+        &cube_small_big,
 };
 
 const int mode_count = sizeof(lighting_modes) / sizeof(*lighting_modes);

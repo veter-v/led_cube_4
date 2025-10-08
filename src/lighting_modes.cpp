@@ -181,3 +181,37 @@ void Heart::set_to_start()
         }
     }
 }
+
+void CubeSmallBig::mode()
+{
+    if (millis() - timer < TIME_STEP)
+        return;
+
+    timer = millis();
+
+    if (phase == 0) {
+        for (int i = 0; i < DIMENSION_S_BORDER; i++)
+            pinMode(borderColumnPins[i], INPUT);
+
+        digitalWrite(layerPins[0], LOW);
+        digitalWrite(layerPins[DIMENSION_H - 1], LOW);
+
+        phase = 1;
+    } else {
+        for (int i = 0; i < DIMENSION_S_BORDER; i++) {
+            pinMode(borderColumnPins[i], OUTPUT);
+            digitalWrite(borderColumnPins[i], LOW);
+        }
+        digitalWrite(layerPins[0], HIGH);
+        digitalWrite(layerPins[DIMENSION_H - 1], HIGH);
+
+        phase = 0;
+    }
+}
+
+void CubeSmallBig::set_to_start()
+{
+    Mode::set_to_start();
+    for (int i = 1; i < DIMENSION_H - 1; i++)
+        digitalWrite(layerPins[i], HIGH);
+}

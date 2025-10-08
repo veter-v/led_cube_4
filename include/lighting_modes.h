@@ -2,7 +2,6 @@
 #define __LIGHTNING_MODES_H__
 
 /* TODO:
-class CubeSmallBig;
 class Rain;
 class FlyingCube;
 */
@@ -14,7 +13,8 @@ class Mode {
     uint8_t pins_counter {0};
     uint32_t timer {millis()};
     uint8_t phase = 0;
-    Mode(bool start_all_pins_to = LOW) : start_reset_to(start_all_pins_to), pins_counter(0), timer(millis()), phase(0)
+    Mode(bool start_all_pins_to = LOW)
+        : start_reset_to(start_all_pins_to), pins_counter(0), timer(millis()), phase(0)
     {
     }
 
@@ -53,6 +53,13 @@ class Heart : public Mode {
 
   public:
     Heart() : Mode(LOW), knock_timer {millis()} {}
+    void mode() override;
+    void set_to_start() override;
+};
+
+class CubeSmallBig : public Mode {
+  public:
+    CubeSmallBig() : Mode(LOW) {}
     void mode() override;
     void set_to_start() override;
 };
