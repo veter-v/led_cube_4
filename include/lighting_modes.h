@@ -1,5 +1,5 @@
-#ifndef __LIGHTNING_MODES_H__
-#define __LIGHTNING_MODES_H__
+#ifndef __LIGHTING_MODES_H__
+#define __LIGHTING_MODES_H__
 
 /* TODO:
 class Rain;
@@ -60,6 +60,28 @@ class Heart : public Mode {
 class CubeSmallBig : public Mode {
   public:
     CubeSmallBig() : Mode(LOW) {}
+    void mode() override;
+    void set_to_start() override;
+};
+
+class Rotator : public Mode {
+    enum directions { right, down, left, up };
+
+    class ColumnLight {
+        uint8_t column_pin_number;
+
+      public:
+        ColumnLight(uint8_t pin_number = 0) : column_pin_number(pin_number) {}
+
+        void move(directions direction);
+        uint8_t get_new_pin_num(directions direction) const;
+        uint8_t get_pin() const { return columnPins[column_pin_number]; }
+    };
+
+    ColumnLight lights[DIMENSION_H];
+
+  public:
+    Rotator() : Mode(LOW) {}
     void mode() override;
     void set_to_start() override;
 };

@@ -10,6 +10,7 @@ HorizontalLayerByLayer horizontal_layer_by_layer;
 VerticalLayerByLayer vertical_layer_by_layer;
 Heart heart;
 CubeSmallBig cube_small_big;
+Rotator rotator;
 
 Mode* lighting_modes[] = {
         &all_leds,
@@ -17,6 +18,7 @@ Mode* lighting_modes[] = {
         &vertical_layer_by_layer,
         &heart,
         &cube_small_big,
+        &rotator,
 };
 
 const int mode_count = sizeof(lighting_modes) / sizeof(*lighting_modes);

@@ -215,3 +215,117 @@ void CubeSmallBig::set_to_start()
     for (int i = 1; i < DIMENSION_H - 1; i++)
         digitalWrite(layerPins[i], HIGH);
 }
+
+void Rotator::mode()
+{
+    if (millis() - timer < TIME_STEP)
+        return;
+    timer = millis();
+
+    switch (phase) {
+    case 0:
+        for (int i = 0; i < DIMENSION_H / 2; i++) {
+            if (pins_counter > i && pins_counter < DIMENSION_H - i) {
+
+                lights[i].move(right);
+                lights[DIMENSION_H - 1 - i].move(left);
+            }
+        }
+        digitalWrite(layerPins[pins_counter], HIGH);
+
+        pins_counter++;
+        if (pins_counter == DIMENSION_H) {
+            phase = 1;
+            pins_counter = 1;
+        }
+        break;
+
+    case 1:
+        for (int i = 0; i < DIMENSION_H / 2; i++) {
+            if (pins_counter > i && pins_counter < DIMENSION_H - i) {
+
+                lights[i].move(down);
+                lights[DIMENSION_H - 1 - i].move(up);
+            }
+        }
+        digitalWrite(layerPins[DIMENSION_H - pins_counter], LOW);
+
+        pins_counter++;
+        if (pins_counter == DIMENSION_H) {
+            phase = 2;
+            pins_counter = 1;
+        }
+        break;
+    case 2:
+        for (int i = 0; i < DIMENSION_H / 2; i++) {
+            if (pins_counter > i && pins_counter < DIMENSION_H - i) {
+
+                lights[i].move(left);
+                lights[DIMENSION_H - 1 - i].move(right);
+            }
+        }
+        digitalWrite(layerPins[pins_counter], HIGH);
+
+        pins_counter++;
+        if (pins_counter == DIMENSION_H) {
+            phase = 3;
+            pins_counter = 1;
+        }
+        break;
+    case 3:
+        for (int i = 0; i < DIMENSION_H / 2; i++) {
+            if (pins_counter > i && pins_counter < DIMENSION_H - i) {
+
+                lights[i].move(up);
+                lights[DIMENSION_H - 1 - i].move(down);
+            }
+        }
+        digitalWrite(layerPins[DIMENSION_H - pins_counter], LOW);
+
+        pins_counter++;
+        if (pins_counter == DIMENSION_H) {
+            phase = 0;
+            pins_counter = 1;
+        }
+        break;
+    }
+}
+
+void Rotator::set_to_start()
+{
+    Mode::set_to_start();
+    for (int i = 0; i < DIMENSION_S; i++)
+        pinMode(columnPins[i], INPUT);
+
+    for (int i = 0; i < DIMENSION_H; i++) {
+        lights[i] = ColumnLight(i + DIMENSION_H * i);
+        digitalWrite(lights[i].get_pin(), LOW);
+        pinMode(lights[i].get_pin(), OUTPUT);
+        digitalWrite(layerPins[0], HIGH);
+    }
+    pins_counter++;
+}
+
+void Rotator::ColumnLight::move(directions direction)
+{
+    pinMode(get_pin(), INPUT);
+    column_pin_number = get_new_pin_num(direction);
+    digitalWrite(get_pin(), LOW);
+    pinMode(get_pin(), OUTPUT);
+}
+
+uint8_t Rotator::ColumnLight::get_new_pin_num(directions direction) const
+{
+    switch (direction) {
+    case right:
+        return column_pin_number + 1;
+    case down:
+        return column_pin_number + DIMENSION_H;
+    case left:
+        return column_pin_number - 1;
+    case up:
+        return column_pin_number - DIMENSION_H;
+    default:
+        return column_pin_number;
+    }
+}
