@@ -222,73 +222,23 @@ void Rotator::mode()
         return;
     timer = millis();
 
-    switch (phase) {
-    case 0:
-        for (int i = 0; i < DIMENSION_H / 2; i++) {
-            if (pins_counter > i && pins_counter < DIMENSION_H - i) {
+    for (int i = 0; i < DIMENSION_H / 2; i++) {
+        if (pins_counter > i && pins_counter < DIMENSION_H - i) {
 
-                lights[i].move(right);
-                lights[DIMENSION_H - 1 - i].move(left);
-            }
+            lights[i].move((directions) phase);
+            lights[DIMENSION_H - 1 - i].move((directions) ((phase + 2) % num_directions));
         }
-        digitalWrite(layerPins[pins_counter], HIGH);
-
-        pins_counter++;
-        if (pins_counter == DIMENSION_H) {
-            phase = 1;
-            pins_counter = 1;
-        }
-        break;
-
-    case 1:
-        for (int i = 0; i < DIMENSION_H / 2; i++) {
-            if (pins_counter > i && pins_counter < DIMENSION_H - i) {
-
-                lights[i].move(down);
-                lights[DIMENSION_H - 1 - i].move(up);
-            }
-        }
-        digitalWrite(layerPins[DIMENSION_H - pins_counter], LOW);
-
-        pins_counter++;
-        if (pins_counter == DIMENSION_H) {
-            phase = 2;
-            pins_counter = 1;
-        }
-        break;
-    case 2:
-        for (int i = 0; i < DIMENSION_H / 2; i++) {
-            if (pins_counter > i && pins_counter < DIMENSION_H - i) {
-
-                lights[i].move(left);
-                lights[DIMENSION_H - 1 - i].move(right);
-            }
-        }
-        digitalWrite(layerPins[pins_counter], HIGH);
-
-        pins_counter++;
-        if (pins_counter == DIMENSION_H) {
-            phase = 3;
-            pins_counter = 1;
-        }
-        break;
-    case 3:
-        for (int i = 0; i < DIMENSION_H / 2; i++) {
-            if (pins_counter > i && pins_counter < DIMENSION_H - i) {
-
-                lights[i].move(up);
-                lights[DIMENSION_H - 1 - i].move(down);
-            }
-        }
-        digitalWrite(layerPins[DIMENSION_H - pins_counter], LOW);
-
-        pins_counter++;
-        if (pins_counter == DIMENSION_H) {
-            phase = 0;
-            pins_counter = 1;
-        }
-        break;
     }
+    digitalWrite(layerPins[(phase % 2) * DIMENSION_H + (1 - 2 * (phase % 2)) * pins_counter],
+                 (phase + 1) % 2);
+
+    pins_counter++;
+    if (pins_counter == DIMENSION_H) {
+        phase++;
+        pins_counter = 1;
+    }
+    if (phase == num_directions)
+        phase = 0;
 }
 
 void Rotator::set_to_start()

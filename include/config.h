@@ -14,8 +14,10 @@
 #define TIME_HEART_PHASE 1800
 #define MAX_KNOCKS 2
 
-extern const uint8_t layerPins[DIMENSION_H];
-extern const uint8_t columnPins[DIMENSION_S];
-extern const uint8_t borderColumnPins[DIMENSION_S_BORDER];
+inline constexpr uint8_t layerPins[DIMENSION_H] = {A0, A1, A2, A3};
+inline constexpr uint8_t columnPins[DIMENSION_S] = {
+        A4, A5, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+inline constexpr uint8_t borderColumnPins[DIMENSION_S_BORDER] = {
+        A4, A5, 0, 1, 2, 5, 6, 9, 10, 11, 12, 13};
 
 #endif

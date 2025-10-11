@@ -1,6 +1,0 @@
-#include "config.h"
-#include <Arduino.h>
-
-const uint8_t layerPins[DIMENSION_H] = {A0, A1, A2, A3};
-const uint8_t columnPins[DIMENSION_S] = {A4, A5, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
-const uint8_t borderColumnPins[DIMENSION_S_BORDER] = {A4, A5, 0, 1, 2, 5, 6, 9, 10, 11, 12, 13};

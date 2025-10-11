@@ -66,6 +66,7 @@ class CubeSmallBig : public Mode {
 
 class Rotator : public Mode {
     enum directions { right, down, left, up };
+    static constexpr uint8_t num_directions = 4;
 
     class ColumnLight {
         uint8_t column_pin_number;
