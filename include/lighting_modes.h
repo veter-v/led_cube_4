@@ -2,7 +2,6 @@
 #define __LIGHTING_MODES_H__
 
 /* TODO:
-class Rain;
 class FlyingCube;
 */
 
@@ -83,6 +82,15 @@ class Rotator : public Mode {
 
   public:
     Rotator() : Mode(LOW) {}
+    void mode() override;
+    void set_to_start() override;
+};
+
+class Rain : public Mode {
+    uint8_t pin_number;
+
+  public:
+    Rain() : Mode(LOW) { pin_number = random(DIMENSION_S); }
     void mode() override;
     void set_to_start() override;
 };

@@ -225,10 +225,20 @@ void Rotator::mode()
     for (int i = 0; i < DIMENSION_H / 2; i++) {
         if (pins_counter > i && pins_counter < DIMENSION_H - i) {
 
+            /* Направление выведено так:
+            phase -- [right, down, left, up]
+            ((phase + 2) % num_directions) -- [left, up, right, down]
+            */
             lights[i].move((directions) phase);
             lights[DIMENSION_H - 1 - i].move((directions) ((phase + 2) % num_directions));
         }
     }
+
+    /*
+    (phase + 1) % 2) - для чередования HIGH, LOW
+    Для чередования pins_counter, DIMENSION_H - pins_counter:
+    (phase % 2) * DIMENSION_H + (1 - 2 * (phase % 2)) * pins_counter
+    */
     digitalWrite(layerPins[(phase % 2) * DIMENSION_H + (1 - 2 * (phase % 2)) * pins_counter],
                  (phase + 1) % 2);
 
@@ -278,4 +288,34 @@ uint8_t Rotator::ColumnLight::get_new_pin_num(directions direction) const
     default:
         return column_pin_number;
     }
+}
+
+void Rain::mode()
+{
+    if (millis() - timer < RAIN_STEP)
+        return;
+
+    timer = millis();
+    if (phase == 0) {
+        digitalWrite(layerPins[0], LOW);
+        pinMode(columnPins[pin_number], INPUT);
+        pin_number = random(DIMENSION_S);
+
+        digitalWrite(columnPins[pin_number], LOW);
+        pinMode(columnPins[pin_number], OUTPUT);
+    } else {
+        digitalWrite(layerPins[DIMENSION_H - phase], LOW);
+    }
+
+    digitalWrite(layerPins[DIMENSION_H - 1 - phase], HIGH);
+    phase++;
+    if (phase == DIMENSION_H)
+        phase = 0;
+}
+
+void Rain::set_to_start()
+{
+    Mode::set_to_start();
+    for (int i = 0; i < DIMENSION_S; i++)
+        pinMode(columnPins[i], INPUT);
 }
