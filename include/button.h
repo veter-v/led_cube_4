@@ -1,5 +1,4 @@
-#ifndef __BUTTON_H__
-#define __BUTTON_H__
+#pragma once
 
 #include <Arduino.h>
 
@@ -23,5 +22,3 @@ class Button {
     button_modes get_state() const { return state; }
     bool check_button();
 };
-
-#endif

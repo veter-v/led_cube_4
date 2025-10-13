@@ -1,5 +1,4 @@
-#ifndef __LIGHTING_MODES_H__
-#define __LIGHTING_MODES_H__
+#pragma once
 
 /* TODO:
 class FlyingCube;
@@ -94,5 +93,3 @@ class Rain : public Mode {
     void mode() override;
     void set_to_start() override;
 };
-
-#endif

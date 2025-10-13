@@ -1,5 +1,4 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#pragma once
 
 #include <Arduino.h>
 
@@ -21,5 +20,3 @@ inline constexpr uint8_t columnPins[DIMENSION_S] = {
         A4, A5, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
 inline constexpr uint8_t borderColumnPins[DIMENSION_S_BORDER] = {
         A4, A5, 0, 1, 2, 5, 6, 9, 10, 11, 12, 13};
-
-#endif
