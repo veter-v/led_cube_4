@@ -1,8 +1,6 @@
 #pragma once
 
-/* TODO:
-class FlyingCube;
-*/
+#include <Set.h>
 
 class Mode {
     bool start_reset_to {LOW};
@@ -90,6 +88,24 @@ class Rain : public Mode {
 
   public:
     Rain() : Mode(LOW) { pin_number = random(DIMENSION_S); }
+    void mode() override;
+    void set_to_start() override;
+};
+
+class FlyingCube : public Mode {
+    enum directions { west, east, north, south, down, up };
+
+    struct Coords {
+        uint8_t x {1}, y {1}, z {1};
+    };
+
+    Coords cube_vertex;
+    Set<directions, 6> available_directions;
+
+    void move(directions direction);
+
+  public:
+    FlyingCube() : Mode(LOW) {}
     void mode() override;
     void set_to_start() override;
 };

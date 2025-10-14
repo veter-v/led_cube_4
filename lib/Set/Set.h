@@ -9,14 +9,6 @@ class Set {
     size_t count = 0;
 
   public:
-    Set() = default;
-    template <size_t M>
-    Set(const T (&arr)[M])
-    {
-        for (int i = 0; i < M && i < N; i++)
-            add(arr[i]);
-    }
-
     bool add(const T& value)
     {
         if (contains(value) || count >= N)
@@ -26,7 +18,7 @@ class Set {
     }
     bool erase(const T& value)
     {
-        for (int i = 0; i < count; i++) {
+        for (unsigned i = 0; i < count; i++) {
             if (data[i] == value) {
                 data[i] = data[--count];
                 return true;
@@ -36,11 +28,13 @@ class Set {
     }
     bool contains(const T& value)
     {
-        for (int i = 0; i < count; i++) {
+        for (unsigned i = 0; i < count; i++) {
             if (data[i] == value)
                 return true;
         }
         return false;
     }
     size_t size() const { return count; }
+
+    T get_random() const { return data[random(count)]; }
 };

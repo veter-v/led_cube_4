@@ -319,3 +319,139 @@ void Rain::set_to_start()
     for (int i = 0; i < DIMENSION_S; i++)
         pinMode(columnPins[i], INPUT);
 }
+
+void FlyingCube::mode()
+{
+    if (millis() - timer < TIME_STEP)
+        return;
+    timer = millis();
+
+    move(available_directions.get_random());
+}
+
+void FlyingCube::set_to_start()
+{
+    Mode::set_to_start();
+    cube_vertex.x = 1;
+    cube_vertex.y = 1;
+    cube_vertex.z = 1;
+
+    directions available_dir[6] = {west, east, north, south, down, up};
+    for (int i = 0; i < 6; i++)
+        available_directions.add(available_dir[i]);
+
+    for (int i = 0; i < DIMENSION_S_BORDER; i++)
+        pinMode(borderColumnPins[i], INPUT);
+
+    digitalWrite(layerPins[cube_vertex.z], HIGH);
+    digitalWrite(layerPins[cube_vertex.z + 1], HIGH);
+}
+
+void FlyingCube::move(directions direction)
+{
+    switch (direction) {
+    case west:
+        if (cube_vertex.x > 0 && cube_vertex.x < DIMENSION_H - 1) {
+            // гасим два восточных столбца
+            pinMode(columnPins[cube_vertex.y * DIMENSION_H + cube_vertex.x + 1], INPUT);
+            pinMode(columnPins[(cube_vertex.y + 1) * DIMENSION_H + cube_vertex.x + 1], INPUT);
+
+            if (cube_vertex.x == DIMENSION_H - 2) // отошли от восточной границы
+                available_directions.add(east);
+            cube_vertex.x--;
+            if (cube_vertex.x == 0) // упёрлись в западную границу
+                available_directions.erase(west);
+            // зажигаем два западных столбца
+            digitalWrite(columnPins[cube_vertex.y * DIMENSION_H + cube_vertex.x], LOW);
+            pinMode(columnPins[cube_vertex.y * DIMENSION_H + cube_vertex.x], OUTPUT);
+            digitalWrite(columnPins[(cube_vertex.y + 1) * DIMENSION_H + cube_vertex.x], LOW);
+            pinMode(columnPins[(cube_vertex.y + 1) * DIMENSION_H + cube_vertex.x], OUTPUT);
+        }
+        break;
+    case east:
+        if (cube_vertex.x >= 0 && cube_vertex.x < DIMENSION_H - 2) {
+            // гасим два западных столбца
+            pinMode(columnPins[cube_vertex.y * DIMENSION_H + cube_vertex.x], INPUT);
+            pinMode(columnPins[(cube_vertex.y + 1) * DIMENSION_H + cube_vertex.x], INPUT);
+
+            if (cube_vertex.x == 0) // отошли от западной границы
+                available_directions.add(west);
+            cube_vertex.x++;
+            if (cube_vertex.x == DIMENSION_H - 2) // упёрлись в восточную границу
+                available_directions.erase(east);
+            // зажигаем два восточных столбца
+            digitalWrite(columnPins[cube_vertex.y * DIMENSION_H + cube_vertex.x + 1], LOW);
+            pinMode(columnPins[cube_vertex.y * DIMENSION_H + cube_vertex.x + 1], OUTPUT);
+            digitalWrite(columnPins[(cube_vertex.y + 1) * DIMENSION_H + cube_vertex.x + 1], LOW);
+            pinMode(columnPins[(cube_vertex.y + 1) * DIMENSION_H + cube_vertex.x + 1], OUTPUT);
+        }
+        break;
+    case north:
+        if (cube_vertex.y > 0 && cube_vertex.y < DIMENSION_H - 1) {
+            // гасим два южных столбца
+            pinMode(columnPins[(cube_vertex.y + 1) * DIMENSION_H + cube_vertex.x], INPUT);
+            pinMode(columnPins[(cube_vertex.y + 1) * DIMENSION_H + cube_vertex.x + 1], INPUT);
+
+            if (cube_vertex.y == DIMENSION_H - 2) // отошли от южной границы
+                available_directions.add(south);
+            cube_vertex.y--;
+            if (cube_vertex.y == 0) // упёрлись в северную границу
+                available_directions.erase(north);
+            // зажигаем два северных столбца
+            digitalWrite(columnPins[cube_vertex.y * DIMENSION_H + cube_vertex.x], LOW);
+            pinMode(columnPins[cube_vertex.y * DIMENSION_H + cube_vertex.x], OUTPUT);
+            digitalWrite(columnPins[cube_vertex.y * DIMENSION_H + cube_vertex.x + 1], LOW);
+            pinMode(columnPins[cube_vertex.y * DIMENSION_H + cube_vertex.x + 1], OUTPUT);
+        }
+        break;
+    case south:
+        if (cube_vertex.y >= 0 && cube_vertex.y < DIMENSION_H - 2) {
+            // гасим два северных столбца
+            pinMode(columnPins[cube_vertex.y * DIMENSION_H + cube_vertex.x], INPUT);
+            pinMode(columnPins[cube_vertex.y * DIMENSION_H + cube_vertex.x + 1], INPUT);
+
+            if (cube_vertex.y == 0) // отошли от северной границы
+                available_directions.add(north);
+            cube_vertex.y++;
+            if (cube_vertex.y == DIMENSION_H - 2) // упёрлись в южную границу
+                available_directions.erase(south);
+            // зажигаем два южных столбца
+            digitalWrite(columnPins[(cube_vertex.y + 1) * DIMENSION_H + cube_vertex.x], LOW);
+            pinMode(columnPins[(cube_vertex.y + 1) * DIMENSION_H + cube_vertex.x], OUTPUT);
+            digitalWrite(columnPins[(cube_vertex.y + 1) * DIMENSION_H + cube_vertex.x + 1], LOW);
+            pinMode(columnPins[(cube_vertex.y + 1) * DIMENSION_H + cube_vertex.x + 1], OUTPUT);
+        }
+        break;
+    case down:
+        if (cube_vertex.z > 0 && cube_vertex.z < DIMENSION_H - 1) {
+            // гасим верхний слой
+            digitalWrite(layerPins[cube_vertex.z + 1], LOW);
+
+            if (cube_vertex.z == DIMENSION_H - 2) // отошли от верхней границы
+                available_directions.add(up);
+            cube_vertex.z--;
+            if (cube_vertex.z == 0) // упёрлись в нижнюю границу
+                available_directions.erase(down);
+            // зажигаем нижний слой
+            digitalWrite(layerPins[cube_vertex.z], HIGH);
+        }
+        break;
+    case up:
+        if (cube_vertex.z >= 0 && cube_vertex.z < DIMENSION_H - 2) {
+            // гасим нижний слой
+            digitalWrite(layerPins[cube_vertex.z], LOW);
+
+            if (cube_vertex.z == 0) // отошли от нижней границы
+                available_directions.add(down);
+            cube_vertex.z++;
+            if (cube_vertex.z == DIMENSION_H - 2) // упёрлись в верхнюю границу
+                available_directions.erase(up);
+            // зажигаем верхний слой
+            digitalWrite(layerPins[cube_vertex.z + 1], HIGH);
+        }
+        break;
+
+    default:
+        break;
+    }
+}

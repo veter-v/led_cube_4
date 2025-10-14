@@ -12,6 +12,7 @@ Heart heart;
 CubeSmallBig cube_small_big;
 Rotator rotator;
 Rain rain;
+FlyingCube flying_cube;
 
 Mode* lighting_modes[] = {
         &all_leds,
@@ -21,6 +22,7 @@ Mode* lighting_modes[] = {
         &cube_small_big,
         &rotator,
         &rain,
+        &flying_cube,
 };
 
 const int mode_count = sizeof(lighting_modes) / sizeof(*lighting_modes);
