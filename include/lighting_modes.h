@@ -101,11 +101,16 @@ class FlyingCube : public Mode {
 
     Coords cube_vertex;
     Set<directions, 6> available_directions;
+    bool is_continuous_path;
+    directions last_direction {west};
 
     void move(directions direction);
+    directions get_invert_direction(directions direction) const;
 
   public:
-    FlyingCube() : Mode(LOW) {}
+    FlyingCube(bool is_continuous_path = true) : Mode(LOW), is_continuous_path(is_continuous_path)
+    {
+    }
     void mode() override;
     void set_to_start() override;
 };

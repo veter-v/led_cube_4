@@ -326,7 +326,13 @@ void FlyingCube::mode()
         return;
     timer = millis();
 
-    move(available_directions.get_random());
+    directions current_dir = available_directions.get_random();
+    move(current_dir);
+    if (is_continuous_path) {
+        available_directions.add(get_invert_direction(last_direction));
+        last_direction = current_dir;
+        available_directions.erase(get_invert_direction(last_direction));
+    }
 }
 
 void FlyingCube::set_to_start()
@@ -453,5 +459,26 @@ void FlyingCube::move(directions direction)
 
     default:
         break;
+    }
+}
+
+FlyingCube::directions FlyingCube::get_invert_direction(directions direction) const
+{
+    switch (direction) {
+    case west:
+        return east;
+    case east:
+        return west;
+    case north:
+        return south;
+    case south:
+        return north;
+    case down:
+        return up;
+    case up:
+        return down;
+
+    default:
+        return direction;
     }
 }
