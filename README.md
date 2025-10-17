@@ -1,5 +1,7 @@
 # Куб из светодиодов 4 × 4 × 4
-Отличный проект для изучения С++, embedded-разработки и прокачивания навыка пайки 
+Куб из светодиодов с кнопкой для переключения режимов (короткое нажатие - вперёд, длинное - назад). Отличный проект для изучения С++, embedded-разработки и прокачивания навыка пайки.
+
+![Гиффка куба с несколькими режимами](/data/Cube2.gif)
 
 ## Содержание
 - [Необходимые материалы](#вам-потребуются)
@@ -18,14 +20,14 @@
 ## Схема и сборка проекта
 
 <div align="center">
-  <figure style="display: inline-block; vertical-align: top; text-align: center; margin: 0 10px; width: 400px;">
-    <img src="data/Cube.jpg" alt="Куб 4×4×4" width="400"/>
+  <figure style="display: inline-block; vertical-align: top; text-align: center; margin: 0 10px; width: 200px;">
+    <img src="data/Cube.jpg" alt="Куб 4×4×4" width="200"/>
     <figcaption style="word-wrap: break-word;">
       Куб 4×4×4 <br> Аноды светодиодов соединяются горизонтально в плоскости слоёв, а катоды вертикально соединяют столбцы
     </figcaption>
   </figure>
-  <figure style="display: inline-block; vertical-align: top; text-align: center; margin: 0 10px; width: 400px;">
-    <img src="data/arduino_with_button.jpg" alt="Arduino и кнопка" width="400"/>
+  <figure style="display: inline-block; vertical-align: top; text-align: center; margin: 0 10px; width: 200px;">
+    <img src="data/arduino_with_button.jpg" alt="Arduino и кнопка" width="200"/>
     <figcaption style="word-wrap: break-word;">
       Справа через резисторы подключение для слоёв, а лапша слева для столбцов
     </figcaption>
@@ -74,3 +76,5 @@
 Новые режимы можно создавать в *lighting_modes* (.h и .cpp) наследуясь от класса **Mode** аналогично уже созданным и незабывая добавлять их ссылки на объекты в список режимов в *main.cpp* .
 
 Режимы писались так, чтобы размеры куба можно было изменить без последствий, однако тестировался код только на кубе 4 × 4 × 4.
+
+![Гиффка куба с режимом FlyingCube](/data/Cube1.gif "FlyingCube")
