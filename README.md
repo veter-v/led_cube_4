@@ -18,21 +18,25 @@
 - **проволока** для соединения слоёв с резисторами (опционально, можно заменить проводами, но не так красиво будет)
 
 ## Схема и сборка проекта
-
-<div align="center">
-  <figure style="display: inline-block; vertical-align: top; text-align: center; margin: 0 10px; width: 200px;">
-    <img src="data/Cube.jpg" alt="Куб 4×4×4" width="200"/>
-    <figcaption style="word-wrap: break-word;">
-      Куб 4×4×4 <br> Аноды светодиодов соединяются горизонтально в плоскости слоёв, а катоды вертикально соединяют столбцы
-    </figcaption>
-  </figure>
-  <figure style="display: inline-block; vertical-align: top; text-align: center; margin: 0 10px; width: 200px;">
-    <img src="data/arduino_with_button.jpg" alt="Arduino и кнопка" width="200"/>
-    <figcaption style="word-wrap: break-word;">
-      Справа через резисторы подключение для слоёв, а лапша слева для столбцов
-    </figcaption>
-  </figure>
-</div>
+<p align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="data/Cube.jpg" alt="Куб 4×4×4" width="200"/><br/>
+        <sub>
+          Куб 4×4×4.<br/>
+          Аноды светодиодов соединяются горизонтально в плоскости слоёв, а катоды вертикально соединяют столбцы.
+        </sub>
+      </td>
+      <td align="center" style="padding-left: 20px;">
+        <img src="data/arduino_with_button.jpg" alt="Arduino и кнопка" width="200"/><br/>
+        <sub>
+          Справа через резисторы подключение для слоёв, а «лапша» слева для столбцов.
+        </sub>
+      </td>
+    </tr>
+  </table>
+</p>
 
 
 
