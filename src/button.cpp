@@ -3,11 +3,8 @@
 
 bool Button::check_button()
 {
-    static uint32_t btn_start_timer;
     uint32_t current_time = millis();
 
-    static bool is_hold_triggered;
-    static bool last_state;
     bool current_state = read_analog_button();
 
     if (last_state != current_state) {
@@ -24,7 +21,8 @@ bool Button::check_button()
         }
     }
 
-    if (!is_hold_triggered && current_state && (current_time - btn_start_timer >= LONG_PRESS_TIME)) {
+    if (!is_hold_triggered && current_state &&
+        (current_time - btn_start_timer >= LONG_PRESS_TIME)) {
         // Попадение в длинное нажатие
         state = hold;
         is_hold_triggered = true;

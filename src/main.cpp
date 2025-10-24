@@ -4,6 +4,8 @@
 #include "lighting_modes.h"
 #include "button.h"
 
+Button btn_switch_modes(BUTTON_PIN);
+
 // Список режимов
 AllLeds all_leds;
 HorizontalLayerByLayer horizontal_layer_by_layer;
@@ -42,7 +44,6 @@ void setup()
 
 void loop()
 {
-    Button btn_switch_modes(BUTTON_PIN);
     if (btn_switch_modes.check_button()) {
         if (btn_switch_modes.get_state() == Button::press) {
             current_mode = (current_mode + 1) % mode_count;
