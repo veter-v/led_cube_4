@@ -261,8 +261,8 @@ void Rotator::set_to_start()
         lights[i] = ColumnLight(i + DIMENSION_H * i);
         digitalWrite(lights[i].get_pin(), LOW);
         pinMode(lights[i].get_pin(), OUTPUT);
-        digitalWrite(layerPins[0], HIGH);
     }
+    digitalWrite(layerPins[0], HIGH);
     pins_counter++;
 }
 
